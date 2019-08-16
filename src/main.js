@@ -6,16 +6,14 @@ import {createFilmsTemplate} from './components/filmsTemplate';
 import {createFilmCardTemplate} from './components/filmCardTemplate';
 import {createShowMoreBtnTemplate} from './components/showMoreBtnTemplate';
 import {createFilmDetailsTemplate} from './components/filmDetailsTemplate';
+import {getTaskData} from './taskData';
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 const bodyElement = document.querySelector(`body`);
 
-// const renderTemplates = (container, element, position) => {
-//   container.insertAdjacentHTML(position, element);
-// };
-const renderTemplates = (container, element, position, numberFilms = 1) => {
-  new Array(numberFilms).fill(``).forEach(() => container.insertAdjacentHTML(position, element));
+const renderTemplates = (container, element, position, quantity = 1) => {
+  new Array(quantity).fill(``).forEach(() => container.insertAdjacentHTML(position, element));
 };
 const MAIN_FILMS_LIST_COUNT = 5;
 const ADDITIONAL_FILMS_LIST_COUNT = 2;
@@ -31,9 +29,10 @@ const filmsListContainerFirst = filmsListContainerElement[0];
 const filmsListContainerSecond = filmsListContainerElement[1];
 const filmsListContainerThird = filmsListContainerElement[2];
 const filmListElemetn = document.querySelector(`.films-list`);
+console.log(getTaskData());
 
-renderTemplates(filmsListContainerFirst, createFilmCardTemplate(), `beforeend`, MAIN_FILMS_LIST_COUNT);
-renderTemplates(filmsListContainerSecond, createFilmCardTemplate(), `beforeend`, ADDITIONAL_FILMS_LIST_COUNT);
-renderTemplates(filmsListContainerThird, createFilmCardTemplate(), `beforeend`, ADDITIONAL_FILMS_LIST_COUNT);
+renderTemplates(filmsListContainerFirst, createFilmCardTemplate(getTaskData()), `beforeend`, MAIN_FILMS_LIST_COUNT);
+renderTemplates(filmsListContainerSecond, createFilmCardTemplate(getTaskData()), `beforeend`, ADDITIONAL_FILMS_LIST_COUNT);
+renderTemplates(filmsListContainerThird, createFilmCardTemplate(getTaskData()), `beforeend`, ADDITIONAL_FILMS_LIST_COUNT);
 renderTemplates(filmListElemetn, createShowMoreBtnTemplate(), `beforeend`);
-renderTemplates(bodyElement, createFilmDetailsTemplate(), `beforeend`);
+// renderTemplates(bodyElement, createFilmDetailsTemplate(), `beforeend`);
