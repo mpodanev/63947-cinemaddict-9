@@ -1,6 +1,6 @@
 import {createElement} from '../utils';
 
-export class FilmPopup {
+export default class FilmPopup {
   constructor({title, image, description, rating, year, genre, comments}) {
     this._title = title;
     this._image = image;

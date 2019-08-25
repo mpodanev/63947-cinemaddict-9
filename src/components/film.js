@@ -1,6 +1,6 @@
 import {createElement} from '../utils';
 
-export class Film {
+export default class Film {
   constructor({title, image, description, rating, year, genre, comments}) {
     this._title = title;
     this._image = image;
@@ -18,6 +18,10 @@ export class Film {
     }
 
     return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
   }
 
   getTemplate() {

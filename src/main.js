@@ -12,31 +12,26 @@ import Film from './components/film';
 import FilmPopup from './components/filmPopup';
 import {Position, render, unrender} from './utils';
 
-// const headerElement = document.querySelector(`.header`);
-// const mainElement = document.querySelector(`.main`);
-
-// const renderTemplates = (container, element, position, quantity = 1) => {
-//   new Array(quantity).fill(``).forEach(() => container.insertAdjacentHTML(position, element));
-// };
 
 const bodyElement = document.querySelector(`body`);
 const filmsContainer = document.querySelector(`.films-list__container`);
+const additionalFilmsContainer = document.querySelectorAll(`.films-list--extra .films-list__container`);
 const MAIN_FILMS_LIST_COUNT = 5;
 const ADDITIONAL_FILMS_LIST_COUNT = 2;
-// const films = new Array(MAIN_FILMS_LIST_COUNT)
-//   .fill(``)
-//   .map(getTaskData)
-//   .map(createFilmCardTemplate);
-const filmMocks = new Array(MAIN_FILMS_LIST_COUNT).fill(``).map(getFilmData);
 
-const renderFilm = (filmMock) => {
+const filmMocks = new Array(MAIN_FILMS_LIST_COUNT).fill(``).map(getFilmData);
+const filmMocksTopRated = new Array(ADDITIONAL_FILMS_LIST_COUNT).fill(``).map(getFilmData);
+const filmMocksMostCommented = new Array(ADDITIONAL_FILMS_LIST_COUNT).fill(``).map(getFilmData);
+
+const renderFilm = (filmMock, container) => {
   const film = new Film(filmMock);
   const filmPopup = new FilmPopup(filmMock);
 
   const onEscKeyDown = (evt) => {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       // TODO: сделать правильное удаление попапа
-      // filmsContainer.replaceChild(film.getElement(), filmPopup.getElement());
+      unrender(filmPopup.getElement());
+      filmPopup.removeElement();
       document.removeEventListener(`keydown`, onEscKeyDown);
     }
   };
@@ -45,6 +40,13 @@ const renderFilm = (filmMock) => {
     .addEventListener(`click`, () => {
       render(bodyElement, filmPopup.getElement(), Position.BEFOREEND);
       document.addEventListener(`keydown`, onEscKeyDown);
+
+      filmPopup.getElement().querySelector(`.film-details__close-btn`)
+        .addEventListener(`click`, () => {
+          unrender(filmPopup.getElement());
+          filmPopup.removeElement();
+          document.removeEventListener(`keydown`, onEscKeyDown);
+        });
     });
 
   // TODO: Убирать возможность закрытия попапа при добавлении коментария
@@ -53,20 +55,19 @@ const renderFilm = (filmMock) => {
   //     document.removeEventListener(`keydown`, onEscKeyDown);
   //   });
 
-  // TODO:
+  // TODO: Возвращать возможность закрытия попапа при прекращении добавления коментария
   // filmPopup.getElement().querySelector(`textarea`)
   //   .addEventListener(`blur`, () => {
   //     document.addEventListener(`keydown`, onEscKeyDown);
   //   });
 
-  filmPopup.getElement().querySelector(`.card__save`)
-    .addEventListener(`click`, () => {
-      filmsContainer.replaceChild(film.getElement(), filmPopup.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
 
-  render(filmsContainer, film.getElement(), Position.BEFOREEND);
+  render(container, film.getElement(), Position.BEFOREEND);
 };
+
+filmMocks.forEach((filmMock) => renderFilm(filmMock, filmsContainer));
+filmMocksTopRated.forEach((filmMock) => renderFilm(filmMock, additionalFilmsContainer[0]));
+filmMocksTopRated.forEach((filmMock) => renderFilm(filmMock, additionalFilmsContainer[1]));
 
 // renderTemplates(headerElement, createHeaderSearch(), `beforeend`);
 // renderTemplates(headerElement, createHeaderProfileTemplate(), `beforeend`);
