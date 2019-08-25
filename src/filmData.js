@@ -1,4 +1,4 @@
-export const getTaskData = () => ({
+export const getFilmData = () => ({
   title: [
     `Made for Each Other`,
     `Popeye Meets Sinbad`,
@@ -26,7 +26,7 @@ export const getTaskData = () => ({
     `The film opens following a murder at a cabaret in Mexico City in 1936, and then presents the events leading up to it in flashback. The Grea…`,
     `John Mason (James Stewart) is a young, somewhat timid attorney in New York City. He has been doing his job well, and he has a chance of bei…`
   ][Math.floor(Math.random() * 7)],
-  rating: (1 + Math.random() * (10 + 1 - 1)).toFixed(1),
+  rating: (1 + Math.random() * 9).toFixed(1),
   year: Math.round(1920 + Math.random() * (2019 + 1 - 1920)),
   genre: [
     `Musical`,
