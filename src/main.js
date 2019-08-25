@@ -3,14 +3,13 @@ import {createHeaderProfileTemplate} from './components/headerProfileTemplate';
 import {createMainNavigationTemplate} from './components/mainNavigationTemplate';
 import {createSortTemplate} from './components/sortTemplate';
 import {createFilmsTemplate} from './components/filmsTemplate';
-// import {createFilmCardTemplate} from './components/filmCardTemplate';
 import {createShowMoreBtnTemplate} from './components/showMoreBtnTemplate';
-// import {createFilmDetailsTemplate} from './components/filmDetailsTemplate';
 import {getFilmData} from './filmData';
 import {getFilters} from './filtersData';
 import Film from './components/film';
 import FilmPopup from './components/filmPopup';
-import {Position, render, unrender} from './utils';
+import {Position, render, unrender, createElement} from './utils';
+import NoFilmsMessage from './components/noFilmsMessage';
 
 
 const bodyElement = document.querySelector(`body`);
@@ -19,9 +18,11 @@ const additionalFilmsContainer = document.querySelectorAll(`.films-list--extra .
 const MAIN_FILMS_LIST_COUNT = 5;
 const ADDITIONAL_FILMS_LIST_COUNT = 2;
 
+const noFilmsMessage = new NoFilmsMessage();
+render(filmsContainer, noFilmsMessage.getElement(), Position.BEFOREEND);
+
 const filmMocks = new Array(MAIN_FILMS_LIST_COUNT).fill(``).map(getFilmData);
-const filmMocksTopRated = new Array(ADDITIONAL_FILMS_LIST_COUNT).fill(``).map(getFilmData);
-const filmMocksMostCommented = new Array(ADDITIONAL_FILMS_LIST_COUNT).fill(``).map(getFilmData);
+const filmMocksAdditional = new Array(ADDITIONAL_FILMS_LIST_COUNT).fill(``).map(getFilmData);
 
 const renderFilm = (filmMock, container) => {
   const film = new Film(filmMock);
@@ -29,7 +30,6 @@ const renderFilm = (filmMock, container) => {
 
   const onEscKeyDown = (evt) => {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      // TODO: сделать правильное удаление попапа
       unrender(filmPopup.getElement());
       filmPopup.removeElement();
       document.removeEventListener(`keydown`, onEscKeyDown);
@@ -49,25 +49,26 @@ const renderFilm = (filmMock, container) => {
         });
     });
 
-  // TODO: Убирать возможность закрытия попапа при добавлении коментария
-  // filmPopup.getElement().querySelector(`textarea`)
-  //   .addEventListener(`focus`, () => {
-  //     document.removeEventListener(`keydown`, onEscKeyDown);
-  //   });
+  filmPopup.getElement().querySelector(`.film-details__comment-input`)
+    .addEventListener(`focus`, () => {
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
 
-  // TODO: Возвращать возможность закрытия попапа при прекращении добавления коментария
-  // filmPopup.getElement().querySelector(`textarea`)
-  //   .addEventListener(`blur`, () => {
-  //     document.addEventListener(`keydown`, onEscKeyDown);
-  //   });
+  filmPopup.getElement().querySelector(`.film-details__comment-input`)
+    .addEventListener(`blur`, () => {
+      document.addEventListener(`keydown`, onEscKeyDown);
+    });
 
-
+  if (noFilmsMessage._element) {
+    unrender(noFilmsMessage.getElement());
+    noFilmsMessage.removeElement();
+  }
   render(container, film.getElement(), Position.BEFOREEND);
 };
 
 filmMocks.forEach((filmMock) => renderFilm(filmMock, filmsContainer));
-filmMocksTopRated.forEach((filmMock) => renderFilm(filmMock, additionalFilmsContainer[0]));
-filmMocksTopRated.forEach((filmMock) => renderFilm(filmMock, additionalFilmsContainer[1]));
+filmMocksAdditional.forEach((filmMock) => renderFilm(filmMock, additionalFilmsContainer[0]));
+filmMocksAdditional.forEach((filmMock) => renderFilm(filmMock, additionalFilmsContainer[1]));
 
 // renderTemplates(headerElement, createHeaderSearch(), `beforeend`);
 // renderTemplates(headerElement, createHeaderProfileTemplate(), `beforeend`);
