@@ -1,7 +1,8 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
-export default class FilmPopup {
+export default class FilmPopup extends AbstractComponent {
   constructor({title, image, description, rating, year, genre, comments}) {
+    super();
     this._title = title;
     this._image = image;
     this._description = description;
@@ -9,19 +10,6 @@ export default class FilmPopup {
     this._year = year;
     this._genre = genre;
     this._comments = comments;
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   getTemplate() {
