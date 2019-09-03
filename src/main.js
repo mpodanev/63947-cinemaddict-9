@@ -1,7 +1,6 @@
 import {createHeaderSearch} from './components/headerSearchTemplate';
 import {createHeaderProfileTemplate} from './components/headerProfileTemplate';
 import {createMainNavigationTemplate} from './components/mainNavigationTemplate';
-import {createSortTemplate} from './components/sortTemplate';
 import {createFilmsTemplate} from './components/filmsTemplate';
 import {createShowMoreBtnTemplate} from './components/showMoreBtnTemplate';
 import {getFilmData} from './filmData';
