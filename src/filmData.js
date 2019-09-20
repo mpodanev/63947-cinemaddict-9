@@ -36,5 +36,34 @@ export const getFilmData = () => ({
     `Cartoon`,
     `Mystery`
   ][Math.floor(Math.random() * 6)],
-  comments: Math.floor(Math.random() * 6),
+  isFavorite: Math.floor(Math.random() * 2),
+  isWatched: Math.floor(Math.random() * 2),
+  isAddedToWachlist: Math.floor(Math.random() * 2),
+  comments: Math.floor(Math.random() * 2) ? [
+    {
+      emoji: `smile`,
+      author: `Tim Macoveev`,
+      date: Date.now() + 1 + Math.floor(Math.random() * 14 - 14) * 24 * 60 * 60 * 1000,
+      comment: `Interesting setting and a good cast`
+    },
+    {
+      emoji: `sleeping`,
+      author: `John Doe`,
+      date: Date.now() + 1 + Math.floor(Math.random() * 14 - 14) * 24 * 60 * 60 * 1000,
+      comment: `Booooooooooring`
+    },
+    {
+      emoji: `puke`,
+      author: `Mike Juger`,
+      date: Date.now() + 1 + Math.floor(Math.random() * 14 - 14) * 24 * 60 * 60 * 1000,
+      comment: `Very very old. Meh`
+    },
+    {
+      emoji: `angry`,
+      author: `Roman, just Roman`,
+      date: Date.now() + 1 + Math.floor(Math.random() * 14 - 14) * 24 * 60 * 60 * 1000,
+      comment: `Almost two hours? Seriously?`
+    },
+  ].slice(Math.floor(Math.random() * 4)) : [],
+  userRating: null,
 });
