@@ -1,73 +1,69 @@
-import Film from '../components/film';
-import FilmPopup from '../components/filmPopup';
 import {render, unrender, Position} from '../utils';
 import SectionFilms from '../components/section-films';
-import NoFilmsMessage from '../components/noFilmsMessage';
+
 import SortSection from '../components/sort';
+import MovieController from './movie-controller';
 
 export default class PageController {
   constructor(container, films) {
     this._container = container;
     this._films = films;
     this._sectionFilms = new SectionFilms();
-    this._noFilmsMessage = new NoFilmsMessage();
+
     this._sortSection = new SortSection();
     this._topRatedFilms = this._films.slice().sort((a, b) => b.rating - a.rating);
-    this._mostCommentedFilms = this._films.slice().sort((a, b) => b.comments - a.comments);
+    this._mostCommentedFilms = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
+
+    this._subscriptions = [];
+    // this._onChangeView = this._onChangeView.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   init() {
     render(this._container, this._sortSection.getElement(), Position.BEFOREEND);
     render(this._container, this._sectionFilms.getElement(), Position.BEFOREEND);
-    render(this._sectionFilms.getElement(), this._noFilmsMessage.getElement(), Position.AFTERBEGIN);
 
-    this._films.forEach((taskMock) => this._renderFilm(taskMock, this._sectionFilms.getElement().querySelector(`.films-list__container`)));
-    this._topRatedFilms.slice(0, 2).forEach((taskMock) => this._renderFilm(taskMock, this._sectionFilms.getElement().querySelectorAll(`.films-list__container`)[1]));
-    this._mostCommentedFilms.slice(0, 2).forEach((taskMock) => this._renderFilm(taskMock, this._sectionFilms.getElement().querySelectorAll(`.films-list__container`)[2]));
+    this._films.forEach((taskMock) => this._renderFilm(taskMock));
+
+    this._topRatedFilms.slice(0, 2).forEach((taskMock) => this._renderTopRatedFilms(taskMock));
+    this._mostCommentedFilms.slice(0, 2).forEach((taskMock) => this._renderMostCommentedFilm(taskMock));
+
     this._sortSection.getElement().addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
   }
 
+  _renderPage() {
+    unrender(this._sectionFilms.getElement());
+    this._sectionFilms.removeElement();
 
-  _renderFilm(film, container) {
-    const filmComponent = new Film(film);
-    const filmPopupComponent = new FilmPopup(film);
+    this._topRatedFilms = this._films.slice().sort((a, b) => b.rating - a.rating);
+    this._mostCommentedFilms = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        unrender(filmPopupComponent.getElement());
-        filmPopupComponent.removeElement();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
+    render(this._container, this._sectionFilms.getElement(), Position.BEFOREEND);
+    this._films.forEach((taskMock) => this._renderFilm(taskMock));
 
-    filmComponent.getElement().querySelector(`.film-card__comments`)
-      .addEventListener(`click`, () => {
-        render(document.querySelector(`body`), filmPopupComponent.getElement(), Position.BEFOREEND);
-        document.addEventListener(`keydown`, onEscKeyDown);
-
-        filmPopupComponent.getElement().querySelector(`.film-details__close-btn`)
-          .addEventListener(`click`, () => {
-            unrender(filmPopupComponent.getElement());
-            filmPopupComponent.removeElement();
-            document.removeEventListener(`keydown`, onEscKeyDown);
-          });
-        filmPopupComponent.getElement().querySelector(`.film-details__comment-input`)
-          .addEventListener(`focus`, () => {
-            document.removeEventListener(`keydown`, onEscKeyDown);
-          });
-
-        filmPopupComponent.getElement().querySelector(`.film-details__comment-input`)
-          .addEventListener(`blur`, () => {
-            document.addEventListener(`keydown`, onEscKeyDown);
-          });
-      });
+    this._topRatedFilms.slice(0, 2).forEach((taskMock) => this._renderTopRatedFilms(taskMock));
+    this._mostCommentedFilms.slice(0, 2).forEach((taskMock) => this._renderMostCommentedFilm(taskMock));
+  }
 
 
-    if (this._noFilmsMessage._element) {
-      unrender(this._noFilmsMessage.getElement());
-      this._noFilmsMessage.removeElement();
-    }
-    render(container, filmComponent.getElement(), Position.BEFOREEND);
+  _renderFilm(film) {
+    // eslint-disable-next-line
+    new MovieController(this._sectionFilms.getElement().querySelector(`.films-list__container`), film, this._onDataChange, this._onChangeView);
+  }
+
+  _renderTopRatedFilms(film) {
+    // eslint-disable-next-line
+    new MovieController(this._sectionFilms.getElement().querySelectorAll(`.films-list__container`)[1], film, this._onDataChange, this._onChangeView);
+  }
+
+  _renderMostCommentedFilm(film) {
+    // eslint-disable-next-line
+    new MovieController(this._sectionFilms.getElement().querySelectorAll(`.films-list__container`)[2], film, this._onDataChange, this._onChangeView);
+  }
+
+  _onDataChange(newData, oldData) {
+    this._films[this._films.findIndex((it) => it === oldData)] = newData;
+    this._renderPage();
   }
 
   _onSortLinkClick(evt) {
