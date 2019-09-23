@@ -3,6 +3,7 @@ import FilmPopup from '../components/filmPopup';
 import {render, unrender, Position, createElement} from '../utils';
 import NoFilmsMessage from '../components/noFilmsMessage';
 import UserRating from '../components/user-rating';
+import moment from 'moment';
 
 export default class MovieController {
   constructor(container, data, onDataChange, onChangeView) {
@@ -43,7 +44,7 @@ export default class MovieController {
               <p class="film-details__comment-text">${commentData.comment}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${commentData.author}</span>
-                <span class="film-details__comment-day">${commentData.data}</span>
+                <span class="film-details__comment-day">${moment(commentData.data).fromNow()}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
